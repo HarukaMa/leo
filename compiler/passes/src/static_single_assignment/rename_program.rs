@@ -113,7 +113,7 @@ impl ProgramConsumer for StaticSingleAssigner {
             imports: input
                 .imports
                 .into_iter()
-                .map(|(name, import)| (name, self.consume_program(import)))
+                .map(|(name, (import, span))| (name, (self.consume_program(import), span)))
                 .collect(),
             program_scopes: input
                 .program_scopes

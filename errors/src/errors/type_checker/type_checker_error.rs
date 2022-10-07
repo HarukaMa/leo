@@ -423,4 +423,11 @@ create_messages!(
         msg: format!("Cannot call a local transition function from a transition function."),
         help: None,
     }
+
+    @formatted
+    imported_program_cannot_import_program {
+        args: (),
+        msg: format!("An imported program cannot import another program."),
+        help: None,
+    }
 );

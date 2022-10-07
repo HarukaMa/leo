@@ -75,10 +75,11 @@ impl ParserContext<'_> {
         )
     }
 
+    // TODO: remove import resolution from parser.
     /// Parses an import statement `import foo.leo;`.
-    pub(super) fn parse_import(&mut self) -> Result<(Identifier, Program)> {
+    pub(super) fn parse_import(&mut self) -> Result<(Identifier, (Program, Span))> {
         // Parse `import`.
-        let _start = self.expect(&Token::Import)?;
+        let start = self.expect(&Token::Import)?;
 
         // Parse `foo`.
         let import_name = self.expect_identifier()?;
@@ -90,7 +91,7 @@ impl ParserContext<'_> {
             return Err(ParserError::leo_imports_only(self.token.span).into());
         }
 
-        let _end = self.expect(&Token::Semicolon)?;
+        let end = self.expect(&Token::Semicolon)?;
 
         // Tokenize and parse import file.
         // Todo: move this to a different module.
@@ -118,7 +119,7 @@ impl ParserContext<'_> {
         // Use the parser to construct the imported abstract syntax tree (ast).
         let program_ast = parse_ast(self.handler, &prg_sf.src, prg_sf.start_pos)?;
 
-        Ok((import_name, program_ast.into_repr()))
+        Ok((import_name, (program_ast.into_repr(), start + end)))
     }
 
     /// Parsers a program scope `program foo.aleo { ... }`.
